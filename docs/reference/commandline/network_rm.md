@@ -15,7 +15,7 @@ Aliases:
   rm, remove
 
 Options:
-      --help   Print usage
+  -f, --force   Force the removal of a network
 ```
 
 ## Description
