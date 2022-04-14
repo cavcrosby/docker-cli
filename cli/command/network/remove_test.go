@@ -2,7 +2,7 @@ package network
 
 import (
 	"context"
-	"io/ioutil"
+	"io"
 	"testing"
 
 	"github.com/docker/cli/internal/test"
@@ -21,7 +21,7 @@ func TestNetworkRemoveForce(t *testing.T) {
 	})
 
 	cmd := newRemoveCommand(fakeCli)
-	cmd.SetOut(ioutil.Discard)
+	cmd.SetOut(io.Discard)
 
 	cmd.SetArgs([]string{"foo"})
 	// 'network rm' currently only returns a generic error string that only states the
