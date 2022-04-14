@@ -7,6 +7,7 @@ import (
 	"github.com/docker/cli/cli"
 	"github.com/docker/cli/cli/command"
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/errdefs"
 	"github.com/spf13/cobra"
 )
 
@@ -28,8 +29,7 @@ func newRemoveCommand(dockerCli command.Cli) *cobra.Command {
 	}
 
 	flags := cmd.Flags()
-	flags.BoolVarP(&opts.force, "force", "f", false, "Force the removal of a network")
-	flags.SetAnnotation("force", "version", []string{"1.25"})
+	flags.BoolVarP(&opts.force, "force", "f", false, "Do not error if the network does not exist")
 	return cmd
 }
 
@@ -49,7 +49,10 @@ func runRemove(dockerCli command.Cli, networks []string, opts *removeOptions) er
 			!command.PromptForConfirmation(dockerCli.In(), dockerCli.Out(), ingressWarning) {
 			continue
 		}
-		if err := client.NetworkRemove(ctx, name); err != nil && !opts.force {
+		if err := client.NetworkRemove(ctx, name); err != nil {
+			if opts.force && errdefs.IsNotFound(err) {
+				continue
+			}
 			fmt.Fprintf(dockerCli.Err(), "%s\n", err)
 			status = 1
 			continue

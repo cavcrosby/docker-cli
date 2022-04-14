@@ -15,7 +15,7 @@ Aliases:
   rm, remove
 
 Options:
-  -f, --force   Force the removal of a network
+  -f, --force   Do not error if the network does not exist
 ```
 
 ## Description
